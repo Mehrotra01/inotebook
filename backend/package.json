@@ -4,12 +4,14 @@
   "description": "Notes application",
   "main": "index.js",
   "scripts": {
-    "start":"nodemon ./index.js"
+    "start": "nodemon ./index.js"
   },
   "author": "Harsh Mehrotra",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "mongoose": "^7.4.3"
   },
   "devDependencies": {
