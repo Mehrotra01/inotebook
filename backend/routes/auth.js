@@ -1,7 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const User = require("../models/User");
 const route = express.Router();
 const { body, validationResult } = require("express-validator");
+const bcriptJs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+// console.log(process.env.SECRET);
 
 route.post(
   "/createUser",
@@ -31,21 +35,92 @@ route.post(
           .status(400)
           .json({ error: "Sorry a user with this email exists" });
       }
+
+      const salt = await bcriptJs.genSalt(10);
+      // console.log(salt);
+      const secPass = await bcriptJs.hash(req.body.password, salt);
+
       user = await User.create({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: secPass,
       });
 
-      // .then(user => res.json(user))
-      // .catch(err=>{console.log(err)
-      // res.json("message:"+ err.message)});
-      // res.json({nice:"Gob Done"});
-      res.json(user);
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      const authToken = jwt.sign(data, process.env.SECRET); //it is a synch method
+      // console.log(authToken);
+      res.json({ authToken });
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("Some error occured");
+      res.status(500).send("Some error occureda t creating user");
     }
   }
 );
+
+// Authentication a USer using :POST "/api/auth/login". No login req
+route.post(
+  "/login",
+  [
+    body("email", "enter a valid email").notEmpty().isEmail(),
+    body("password", "Password must contain 5 character").exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password } = req.body;
+    try {
+      let user = await User.findOne({ email });
+      if (!user) {
+        return res
+          .status(400)
+          .json({ error: "Please try to login with correct credentials" });
+      }
+
+      const passCompare = await bcriptJs.compare(password, user.password);
+
+      if (!passCompare) {
+        return res
+          .status(400)
+          .json({ error: "Please try to login with correct credentials" });
+      }
+
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      const authToken = jwt.sign(data, process.env.SECRET); //it is a synch method
+      // console.log(authToken);
+      res.json({ authToken });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Some error occured at login");
+    }
+  }
+);
+
+// Getting loggedn user details :POST "/api/auth/getUser". login req
+
+route.post("/getUser", fetchUser,async (req, res) => {
+  
+    try {
+      const userId = "";
+      const user = await User.findById(userId).select("-password");
+      res.send(user);
+    }
+     catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
 module.exports = route;
