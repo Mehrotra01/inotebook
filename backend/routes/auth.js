@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 const express = require("express");
 const User = require("../models/User");
 const route = express.Router();
@@ -8,8 +8,8 @@ const jwt = require("jsonwebtoken");
 const fetchUser = require("../middleware/fetchUser")
 
 
-// console.log(process.env.SECRET);
-
+// console.log(SECRET);
+const SECRET="gumgumnopistol"
 route.post(
   "/createUser",
   [
@@ -54,7 +54,7 @@ route.post(
           id: user.id,
         },
       };
-      const authToken = jwt.sign(data, process.env.SECRET); //it is a synch method
+      const authToken = jwt.sign(data, SECRET); //it is a synch method
       // console.log(authToken);
       res.json({ authToken });
     } catch (error) {
@@ -65,6 +65,7 @@ route.post(
 );
 
 // Authentication a USer using :POST "/api/auth/login". No login req
+
 route.post(
   "/login",
   [
@@ -86,7 +87,7 @@ route.post(
           .json({ error: "Please try to login with correct credentials" });
       }
 
-      const passCompare = await bcriptJs.compare(password, user.password);
+      const passCompare =  bcriptJs.compare(password, user.password);
 
       if (!passCompare) {
         return res
@@ -100,8 +101,8 @@ route.post(
         },
       };
 
-      const authToken = jwt.sign(data, process.env.SECRET); //it is a synch method
-      // console.log(authToken);
+      const authToken =  jwt.sign(data, SECRET); //it is a synch method
+      // console.log(SECRET);
       res.json({ authToken });
     } catch (error) {
       console.error(error.message);
@@ -115,12 +116,13 @@ route.post(
 route.post("/getUser", fetchUser,async (req, res) => {
   
     try {
+      // console.log(user);
       const userId = req.user.id;
       const user = await User.findById(userId).select("-password");
       res.send(user);
     }
-     catch (error) {
-      console.error(error.message);
+    catch (error) {
+      console.error(error);
       res.status(500).send("Internal Server Error");
     }
   }

@@ -57,6 +57,7 @@ route.post(
 );
 
 // routes3: Update an existing Note using :POST "api/notes/updateNote". Login REQUIRED
+
 route.put("/updateNote/:id", fetchUser, async (req, res) => {
   const { title, description, tag } = req.body;
 
@@ -75,7 +76,7 @@ route.put("/updateNote/:id", fetchUser, async (req, res) => {
   let note = await Notes.findById(req.params.id);
 
   if (!note) {
-    return res.status(404) / send("Not Found");
+    return res.status(404).send("Not Found");
   }
 
   if (note.user.toString() !== req.user.id) {
@@ -93,11 +94,12 @@ route.put("/updateNote/:id", fetchUser, async (req, res) => {
 
 // routes4 : Delete an existing Note using :POST "api/notes/deleteNote". Login REQUIRED
 route.delete("/deleteNote/:id", fetchUser, async (req, res) => {
-  try {
+  
+    try {
     let note = await Notes.findById(req.params.id);
 
     if (!note) {
-      return res.status(404) / send("Not Found");
+      return res.status(404).send("Not Found");
     }
 
     if (note.user.toString() !== req.user.id) {
@@ -105,7 +107,8 @@ route.delete("/deleteNote/:id", fetchUser, async (req, res) => {
     }
     note = await Notes.findByIdAndDelete(req.params.id);
     res.json({ suceess: "Note has been deleted", note: note });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error(error.message);
     res.status(500).send("Internal Server error in deleting notes");
   }
