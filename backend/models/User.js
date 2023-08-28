@@ -14,6 +14,10 @@ const UserSchema = new Schema({
         require:true,
         unique:true
     },
+    gender:{
+        type:String,
+        default:"Others"
+    },
     Date:{ 
         type:Date,
         default:Date.now

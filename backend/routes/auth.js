@@ -5,6 +5,9 @@ const route = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcriptJs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fetchUser = require("../middleware/fetchUser")
+
+
 // console.log(process.env.SECRET);
 
 route.post(
@@ -112,7 +115,7 @@ route.post(
 route.post("/getUser", fetchUser,async (req, res) => {
   
     try {
-      const userId = "";
+      const userId = req.user.id;
       const user = await User.findById(userId).select("-password");
       res.send(user);
     }

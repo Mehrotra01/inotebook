@@ -1,14 +1,19 @@
 // we name it in cap's cause it notanormal file it is a  mongo's Model
 
 const mongoose = require('mongoose');
+const {Schema} = mongoose;
 const NotesSchema = new Schema({
-    title: {
-        type: String,
-        required: true
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'user'        
     },
-    description: {
-        type: String,
-        required: true,
+    title:{
+        type:String,
+        require:true
+    },
+    description:{
+        type:String,
+        require:true
     },
     tag: {
         type: String,
