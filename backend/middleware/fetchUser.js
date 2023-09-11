@@ -1,8 +1,6 @@
-require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-
-const SECRET="gumgumnopistol"
+const SECRET = "gumgumnopistol";
 
 const fetchUser = (req, res, next) => {
   try {
@@ -13,13 +11,12 @@ const fetchUser = (req, res, next) => {
         .status(401)
         .send({ error: "Please authenticate using a valid token" });
     }
-    const data = jwt.verify(token,SECRET);
-    req.user =data.user;
+    const data = jwt.verify(token, SECRET);
+    req.user = data.user;
     next();
-
   } catch (error) {
     console.error(error.message);
-    res.status(401).send("Please authenticate using a valid token")
+    res.status(401).send("Please authenticate using a valid token");
   }
 };
 

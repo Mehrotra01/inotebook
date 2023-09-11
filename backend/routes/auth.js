@@ -6,10 +6,10 @@ const { body, validationResult } = require("express-validator");
 const bcriptJs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fetchUser = require("../middleware/fetchUser")
+const SECRET="gumgumnopistol";
 
 
 // console.log(SECRET);
-const SECRET="gumgumnopistol"
 route.post(
   "/createUser",
   [
