@@ -14,16 +14,16 @@ const NoteState = (props) => {
       headers: {
         "Content-Type": "application/json",
         "auth-header":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRlYzg5NjM2MDA0M2UzNjkzOWE2ZDVlIn0sImlhdCI6MTY5NDQyMjc1N30.nKB7wLm7GcoHonMkpiyoY8lr-dnHcaUJlYw7MoB7ARU",
+          localStorage.getItem('token'),
       },
     });
 
     const json = await responce.json();
-    console.log(json);
+    // eslint-disable-next-line
+    // console.log(json);
     setNotes(json);
   };
 
-  // Add a note
   const addNote = async (title, description, tag) => {
     // TODO :API CALL
     const responce = await fetch(`${host}/api/notes/addNote`, {
@@ -31,22 +31,12 @@ const NoteState = (props) => {
       headers: {
         "Content-Type": "application/json",
         "auth-header":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRlYzg5NjM2MDA0M2UzNjkzOWE2ZDVlIn0sImlhdCI6MTY5NDQyMjc1N30.nKB7wLm7GcoHonMkpiyoY8lr-dnHcaUJlYw7MoB7ARU",
+          localStorage.getItem('token'),
       },
       body: JSON.stringify({ title, description, tag }),
     });
 
-    const json = await responce.json();
-    console.log(json);
-    const note = {
-      _id: "64ec8aad795ce701fdd10405",
-      user: "64e9fc15e97b75fbd632c57a",
-      title: title,
-      description: description,
-      tag: tag,
-      date: "2023-08-28T11:53:17.328Z",
-      __v: 0,
-    };
+    const note = await responce.json();
     setNotes(notes.concat(note));
   };
   // delete a note
@@ -56,11 +46,16 @@ const NoteState = (props) => {
       headers: {
         "Content-Type": "application/json",
         "auth-header":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRlYzg5NjM2MDA0M2UzNjkzOWE2ZDVlIn0sImlhdCI6MTY5NDQyMjc1N30.nKB7wLm7GcoHonMkpiyoY8lr-dnHcaUJlYw7MoB7ARU",
+          localStorage.getItem('token'),
       },
     });
     // console.log("del note with id1" + id);
-    console.log(await responce.json());
+    // console.log(await responce.json());
+    
+    // eslint-disable-next-line
+    const json =responce.json();
+    // console.log(json.sucess);
+
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -74,13 +69,13 @@ const NoteState = (props) => {
       headers: {
         "Content-Type": "application/json",
         "auth-header":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRlYzg5NjM2MDA0M2UzNjkzOWE2ZDVlIn0sImlhdCI6MTY5NDQyMjc1N30.nKB7wLm7GcoHonMkpiyoY8lr-dnHcaUJlYw7MoB7ARU",
+          localStorage.getItem('token'),
       },
       body: JSON.stringify({ title, description, tag }),
     });
-
+    // eslint-disable-next-line
     const json = await responce.json();
-    console.log(json);
+    // console.log(json);
 
     let newNotes = JSON.parse(JSON.stringify(notes));
     // logic to edit in client

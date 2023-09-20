@@ -1,11 +1,11 @@
 import React,{useState} from 'react'
 import { useNavigate } from "react-router-dom";
 
-const login = () => {
+const login = (props) => {
 
     const [credentials, setcredentials] = useState({email:"",password:""})
-    const navigate = useNavigate()
-    
+    const navigate = useNavigate();
+
     const handleSubmit = async (e)=>{
         e.preventDefault();
 
@@ -18,12 +18,15 @@ const login = () => {
           });
       
           const json = await responce.json();
-          console.log(json);
+          // console.log(json);
           if(json.sucess){
-            localStorage.setItem('auth-header',json.authHeader);
-            navigate('/')          }else{
-              alert("Invalid credentials");
-            }
+            localStorage.setItem('token',json.authToken);
+            localStorage.setItem('Name',json.Name);
+            navigate('/');
+            props.showAlert("SuccesFully LogedIn","success")
+          }else{
+            props.showAlert("Invalid Details","danger")
+          }
     }
 
     const onChange=(e)=>{

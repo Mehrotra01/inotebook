@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import noteContext from "../context/notes/noteContext";
 
 const noteItem = (props) => {
-  const { note, updateNote } = props;
+  const { note, updateNote,showAlert } = props;
   const context = useContext(noteContext);
   const { delNote } = context;
 
   const delNotes = (e) => {
     delNote(note._id);
+    showAlert("Deleted SuccessFully","success");
   };
 
   return (

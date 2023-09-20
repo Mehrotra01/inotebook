@@ -1,15 +1,24 @@
 import React from "react";
 import noteContext from "../context/notes/noteContext";
-import { useContext, useState } from "react";
+import { useContext, useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const addNote = () => {
+const addNote = (props) => {
   const context = useContext(noteContext);
   const { addNote } = context;
+  let navigate= useNavigate();
+  useEffect(() => {
+    if(!localStorage.getItem('token')){
+    navigate('/login')
+    }
+  }, []);
 
   const handleClick = (e) => {
     e.preventDefault();
     addNote(note.title, note.description, note.tag);
     setNote({ title: "", description: "", tag: "" });
+    
+    props.showAlert("Added SuccessFully","success");
   };
 
   const [note, setNote] = useState({ title: "", description: "", tag: "default" });
@@ -51,15 +60,15 @@ const addNote = () => {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="Tag" className="form-label">
+          <label htmlFor="tag" className="form-label">
             Tag
           </label>
           <input
             onChange={onChange}
             type="text"
             className="form-control"
-            id="Tag"
-            name="Tag"
+            id="tag"
+            name="tag"
           />
         </div>
 
