@@ -5,7 +5,9 @@ import NavBar from "./components/Navbar";
 import About from "./components/About";
 import Home from "./components/Home";
 import NoteState from "./context/notes/noteState";
-import Alert from "./components/alert";
+import Login from "./components/login"
+import Signup from "./components/signUp.js"
+// import Alert from "./components/alert";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
         </div>
       </NoteState>

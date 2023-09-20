@@ -5,11 +5,10 @@ const route = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcriptJs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fetchUser = require("../middleware/fetchUser")
-const SECRET="gumgumnopistol";
+const fetchUser = require("../middleware/fetchUser");
+const SECRET = "gumgumnopistol";
 
 
-// console.log(SECRET);
 route.post(
   "/createUser",
   [
@@ -20,13 +19,14 @@ route.post(
       .isLength({ min: 5 }),
   ],
   async (req, res) => {
+    let sucess= false;
     // console.log(req.body);
     // const user = User(req.body);
     // user.save()
     // if there are error in the entry return bad req
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ sucess, errors: errors.array() });
     }
 
     // checck wheather this email exists or not
@@ -36,7 +36,7 @@ route.post(
       if (user) {
         return res
           .status(400)
-          .json({ error: "Sorry a user with this email exists" });
+          .json({sucess, error: "Sorry a user with this email exists" });
       }
 
       const salt = await bcriptJs.genSalt(10);
@@ -56,7 +56,8 @@ route.post(
       };
       const authToken = jwt.sign(data, SECRET); //it is a synch method
       // console.log(authToken);
-      res.json({ authToken });
+      sucess=true;
+      res.json({ sucess,authToken });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Some error occureda t creating user");
@@ -74,8 +75,9 @@ route.post(
   ],
   async (req, res) => {
     const errors = validationResult(req);
+    let sucess =false;
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ sucess, errors: errors.array() });
     }
 
     const { email, password } = req.body;
@@ -84,15 +86,21 @@ route.post(
       if (!user) {
         return res
           .status(400)
-          .json({ error: "Please try to login with correct credentials" });
+          .json({
+            sucess,
+            error: "Please try to login with correct credentials",
+          });
       }
 
-      const passCompare =  bcriptJs.compare(password, user.password);
+      const passCompare = bcriptJs.compare(password, user.password);
 
       if (!passCompare) {
         return res
           .status(400)
-          .json({ error: "Please try to login with correct credentials" });
+          .json({
+            sucess,
+            error: "Please try to login with correct credentials",
+          });
       }
 
       const data = {
@@ -101,9 +109,10 @@ route.post(
         },
       };
 
-      const authToken =  jwt.sign(data, SECRET); //it is a synch method
+      const authToken = jwt.sign(data, SECRET); //it is a synch method
       // console.log(SECRET);
-      res.json({ authToken });
+      sucess = true;
+      res.json({ sucess,  authToken });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Some error occured at login");
@@ -113,19 +122,16 @@ route.post(
 
 // Getting loggedn user details :POST "/api/auth/getUser". login req
 
-route.post("/getUser", fetchUser,async (req, res) => {
-  
-    try {
-      // console.log(user);
-      const userId = req.user.id;
-      const user = await User.findById(userId).select("-password");
-      res.send(user);
-    }
-    catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    }
+route.post("/getUser", fetchUser, async (req, res) => {
+  try {
+    // console.log(user);
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
+    res.send(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-);
+});
 
 module.exports = route;
